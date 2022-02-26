@@ -1,0 +1,23 @@
+1. Spelare skapar en ARENA
+2. Klienten skickar ett POST anrop till servern "api/arenas"
+3. Servern skapar upp ett nytt par i REDIS-HASHEN 
+    --> incr("arenas:ids")
+    --> var arenaId = get("arenas:ids");
+    --> hmset("Arenas", {`${arenaId}` : `${jsonString}`}, (err, reply) => {
+        // ...
+    })
+4. Klienten får tillbaka arena:idt och redirectas till "/arenas/{arenaId}"
+5. Klienten anropar GET på "arenas/arena/{arenaId}"
+6. Servern får arena:idt och hämtar upp information om arenan
+    --> hmget("Arenas", `${arenaId}`) 
+        --> [SENARE: Anropa io.of("friends").emit("arenaWasCreated")]
+    --> Sätter upp socketio.room(`joinedArena/`${arenaId}) {
+        socketio.emit(`userJoinedArena/${arenaId}`)
+    }
+    --> Vi skickar tillbaka datat som klienten kan se
+7. När en spelare joinar "/arenas/{arenaId}" så ska vi "broadcasta" "userJoinedArena" till alla sockets i rummet
+8. När 10 sockets finns i samma "room" så kan vi starta matchen.
+9. När matchen är klar så ska vi ta bort hashen ur redis databasen och spara ner match-data till alla användare
+    --> hdel("Arenas", `${arenaId}`)
+    --> Spara ner statistik från matchen till alla spelare
+    --> Efter hashen är borttagen så ska spelare i samma "socket.room" få emit("redirectToMatchPreview", matchId)
