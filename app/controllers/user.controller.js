@@ -64,6 +64,22 @@ exports.getSingleByRootId = (req, res) => {
     });
 }
 
+exports.getSingleByUUID = (req, res) => {
+    User.findByUUID(req.params.uuid, (err, data) => {
+        if (err) {
+            if(err.kind === "not_found") {
+                res.status(404).send({
+                    message: `Not found UserRoot with uuid ${req.params.uuid}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retrieveing UserRoot with uuid" + req.params.uuid
+                });
+            }
+        } else res.send(data);
+    });
+}
+
 exports.getSingleFull = (req, res) => {
     UserRoot.findByUserName(req.params.username, (err, data) => {
         if (err) {

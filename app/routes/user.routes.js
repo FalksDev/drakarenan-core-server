@@ -13,6 +13,8 @@ module.exports = app => {
 
     router.get("/byroot/:id", user.getSingleByRootId);
 
+    router.get("/byuuid/:uuid", user.getSingleByUUID);
+
     router.get("/bystartingcharacters/:characters", user.getByStartingCharacters);
     
     app.use('/api/user', router);

@@ -1,7 +1,9 @@
 const sql = require("./db.js");
+const { v4: uuidv4 } = require('uuid');
 
 // Constructor
 const UserRoot = function(userroot) {
+    this.uuid = uuidv4(),
     this.steam_64_id = userroot.steam_64_id;
     this.username = userroot.username;
 }

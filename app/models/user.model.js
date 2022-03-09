@@ -5,7 +5,7 @@ const User = function(user) {
     this.phone_number = user.phone_number;
     this.email_address = user.email_address;
     this.avatar_url = user.avatar_url;
-    this.rating = user.rating
+    this.rating = 1000
 }
 
 User.create = (newUser, result) => {
@@ -41,7 +41,26 @@ User.findById = (id, result) => {
 }
 
 User.findByRootId = (id, result) => {
-    sql.query(`SELECT * FROM user WHERE userroot_id = ${id}`, (err, res) => {
+    sql.query(`SELECT * FROM user JOIN userroot ON user.userroot_id = userroot.id WHERE userroot_id = ${id}`, (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(err, null);
+            return;
+        }
+
+        if (res.length) {
+            console.log("found user: ", res[0]);
+            result(null, res[0]);
+            return;
+        }
+
+        // Not found any user with that specific ID
+        result({ kind: "not_found" }, null);
+    });
+}
+
+User.findByUUID = (uuid, result) => {
+    sql.query(`SELECT * FROM user JOIN userroot ON user.userroot_id = userroot.id WHERE userroot.uuid = '${uuid}'`, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);

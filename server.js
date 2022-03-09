@@ -37,7 +37,8 @@ const PORT = process.env.PORT || 8080;
 require("./app/routes/userroot.routes.js")(app);
 require("./app/routes/user.routes.js")(app);
 require("./app/routes/steam.routes.js")(app, PORT);
-require("./app/routes/arenas.routes.js")(app, io)
+require("./app/routes/arenas.routes.js")(app)
+require("./app/websockets/arenas.websocket.js")(io);
 
 
 // sets port, listen for requests
